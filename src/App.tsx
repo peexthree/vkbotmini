@@ -19,9 +19,11 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Services from './pages/Services';
 import { useAppearance } from './hooks/useAppearance';
+import { useBridge } from './hooks/useBridge';
 
 const App: React.FC = () => {
   const appearance = useAppearance();
+  useBridge();
   const [activeStory, setActiveStory] = useState<string>('home');
 
   const onStoryChange = (e: React.MouseEvent<HTMLElement>) => {

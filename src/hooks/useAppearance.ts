@@ -5,9 +5,10 @@ export const useAppearance = () => {
   const [appearance, setAppearance] = useState<AppearanceType>('light');
 
   useEffect(() => {
-    const handler = ({ detail: { type, data } }: any) => {
-      if (type === 'VKWebAppUpdateConfig') {
-        setAppearance(data.appearance);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handler = (event: any) => {
+      if (event.detail.type === 'VKWebAppUpdateConfig') {
+        setAppearance(event.detail.data.appearance);
       }
     };
     bridge.subscribe(handler);

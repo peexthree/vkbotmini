@@ -7,42 +7,66 @@ import {
   SimpleCell,
   Button,
   Div,
+  InfoRow,
 } from '@vkontakte/vkui';
 import bridge from '@vkontakte/vk-bridge';
-import { getStatus } from '../api';
+import { getUserInfo, type UserInfo } from '../api';
 
 interface HomeProps {
   id: string;
 }
 
 const Home: React.FC<HomeProps> = ({ id }) => {
-  const [status, setStatus] = useState<string>('Загрузка...');
+  const [userData, setUserData] = useState<UserInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchStatus() {
+    async function fetchUserInfo() {
       try {
-        const data = await getStatus();
-        setStatus(data.status || 'OK');
-      } catch (error) {
-        setStatus('Ошибка подключения к бэкенду');
+        const data = await getUserInfo();
+        setUserData(data);
+      } catch (err) {
+        setError('Ошибка при загрузке данных');
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
-    fetchStatus();
+    fetchUserInfo();
   }, []);
 
   const shareOnWall = () => {
     bridge.send('VKWebAppShowWallPostBox', {
-      message: 'Привет из АНТИ-ТАР!',
+      message: 'Привет из АНТИ-ТАР! Мой уровень: ' + (userData?.level || 1),
     });
   };
 
   return (
     <Panel id={id}>
       <PanelHeader>АНТИ-ТАР</PanelHeader>
-      <Group header={<Header>Статус системы</Header>}>
-        <SimpleCell>
-          Бэкенд: {status}
-        </SimpleCell>
+
+      <Group header={<Header>Состояние</Header>}>
+        <Div>
+          {loading ? (
+            'Загрузка...'
+          ) : error ? (
+            error
+          ) : (
+            <>
+              <SimpleCell>
+                <InfoRow header="Текущий баланс">
+                  {userData?.balance} монет
+                </InfoRow>
+              </SimpleCell>
+              <SimpleCell>
+                <InfoRow header="Статус бота">
+                  {userData?.status}
+                </InfoRow>
+              </SimpleCell>
+            </>
+          )}
+        </Div>
       </Group>
 
       <Group header={<Header>Действия</Header>}>
