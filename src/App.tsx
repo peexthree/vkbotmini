@@ -18,7 +18,6 @@ import {
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Services from './pages/Services';
-import ErrorBoundary from './components/ErrorBoundary';
 import { useAppearance } from './hooks/useAppearance';
 import { useBridge } from './hooks/useBridge';
 
@@ -75,9 +74,7 @@ const App: React.FC = () => {
                   <Services id="services" />
                 </View>
                 <View id="profile" activePanel="profile">
-                  <ErrorBoundary>
-                    <Profile id="profile" />
-                  </ErrorBoundary>
+                  <Profile id="profile" />
                 </View>
               </Epic>
             </SplitCol>
