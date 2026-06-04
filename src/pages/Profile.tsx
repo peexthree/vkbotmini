@@ -26,11 +26,12 @@ import ErrorBoundary from '../components/ErrorBoundary';
 
 interface ProfileProps {
   id: string;
+  onNavigate: (panel: string) => void;
 }
 
 const DEFAULT_AVATAR = 'https://vk.com/images/camera_200.png';
 
-const Profile: React.FC<ProfileProps> = ({ id }) => {
+const Profile: React.FC<ProfileProps> = ({ id, onNavigate }) => {
   const { userData, loading, refresh } = useUserInfo();
   const [vkUser, setVkUser] = useState<VKUserInfo | null>(null);
 
@@ -151,7 +152,10 @@ const Profile: React.FC<ProfileProps> = ({ id }) => {
 
         <Group header={<Header multiline style={{ color: '#aaa' }}>МЕНЮ ПОДРАЗДЕЛОВ</Header>}>
           <CardGrid size="m">
-            <Card style={{ borderRadius: '12px', overflow: 'hidden' }} onClick={() => {}}>
+            <Card
+              style={{ borderRadius: '12px', overflow: 'hidden' }}
+              onClick={() => onNavigate('grimoire')}
+            >
               <div style={menuCardStyle}>
                 <Icon28BookOutline fill={neonPink} />
                 <Spacing size={8} />

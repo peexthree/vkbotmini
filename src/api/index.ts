@@ -16,6 +16,13 @@ export interface UserInfo {
   active_skin: string;
 }
 
+export interface GrimoireItem {
+  id: number;
+  title: string;
+  date: string;
+  preview: string;
+}
+
 const instance = axios.create({
   baseURL: BACKEND_URL,
 });
@@ -32,6 +39,11 @@ instance.interceptors.request.use((config) => {
 
 export const getUserInfo = async (): Promise<UserInfo> => {
   const response = await instance.get<UserInfo>('/api/user/info');
+  return response.data;
+};
+
+export const getGrimoire = async (): Promise<GrimoireItem[]> => {
+  const response = await instance.get<GrimoireItem[]>('/api/profile/grimoire');
   return response.data;
 };
 

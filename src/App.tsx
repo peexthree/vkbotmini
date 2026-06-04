@@ -18,6 +18,7 @@ import {
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Services from './pages/Services';
+import Grimoire from './pages/Grimoire';
 import { useAppearance } from './hooks/useAppearance';
 import { useBridge } from './hooks/useBridge';
 
@@ -25,6 +26,7 @@ const App: React.FC = () => {
   const appearance = useAppearance();
   useBridge();
   const [activeStory, setActiveStory] = useState<string>('home');
+  const [activeProfilePanel, setActiveProfilePanel] = useState<string>('profile');
 
   const onStoryChange = (story: string) => {
     setActiveStory(story);
@@ -73,8 +75,9 @@ const App: React.FC = () => {
                 <View id="services" activePanel="services">
                   <Services id="services" />
                 </View>
-                <View id="profile" activePanel="profile">
-                  <Profile id="profile" />
+                <View id="profile" activePanel={activeProfilePanel}>
+                  <Profile id="profile" onNavigate={(panel) => setActiveProfilePanel(panel)} />
+                  <Grimoire id="grimoire" onBack={() => setActiveProfilePanel('profile')} />
                 </View>
               </Epic>
             </SplitCol>
