@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Panel,
   PanelHeader,
@@ -8,33 +8,17 @@ import {
   Button,
   Div,
   InfoRow,
+  Counter,
 } from '@vkontakte/vkui';
 import bridge from '@vkontakte/vk-bridge';
-import { getUserInfo, type UserInfo } from '../api';
+import { useUserInfo } from '../hooks/useUserInfo';
 
 interface HomeProps {
   id: string;
 }
 
 const Home: React.FC<HomeProps> = ({ id }) => {
-  const [userData, setUserData] = useState<UserInfo | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchUserInfo() {
-      try {
-        const data = await getUserInfo();
-        setUserData(data);
-      } catch (err) {
-        setError('Ошибка при загрузке данных');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchUserInfo();
-  }, []);
+  const { userData, loading, error } = useUserInfo();
 
   const shareOnWall = () => {
     bridge.send('VKWebAppShowWallPostBox', {
@@ -44,7 +28,15 @@ const Home: React.FC<HomeProps> = ({ id }) => {
 
   return (
     <Panel id={id}>
-      <PanelHeader>АНТИ-ТАР</PanelHeader>
+      <PanelHeader
+        after={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingRight: '12px' }}>
+            <Counter mode="primary">{userData?.balance || 0} 🪙</Counter>
+          </div>
+        }
+      >
+        АНТИ-ТАР
+      </PanelHeader>
 
       <Group header={<Header>Состояние</Header>}>
         <Div>
@@ -62,6 +54,11 @@ const Home: React.FC<HomeProps> = ({ id }) => {
               <SimpleCell>
                 <InfoRow header="Статус бота">
                   {userData?.status}
+                </InfoRow>
+              </SimpleCell>
+              <SimpleCell>
+                <InfoRow header="Уровень">
+                  {userData?.level}
                 </InfoRow>
               </SimpleCell>
             </>
