@@ -22,6 +22,7 @@ import {
 } from '@vkontakte/icons';
 import bridge, { type UserInfo as VKUserInfo } from '@vkontakte/vk-bridge';
 import { useUserInfo } from '../hooks/useUserInfo';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 interface ProfileProps {
   id: string;
@@ -105,7 +106,7 @@ const Profile: React.FC<ProfileProps> = ({ id }) => {
     if (loading && !userData) {
       return (
         <Div style={{ textAlign: 'center', marginTop: 40 }}>
-          <Text style={{ color: neonPurple, textShadow: `0 0 5px ${neonPurple}` }}>
+          <Text style={{ color: '#fff', textShadow: `0 0 5px ${neonPurple}` }}>
             Призыв астральных данных...
           </Text>
         </Div>
@@ -200,23 +201,25 @@ const Profile: React.FC<ProfileProps> = ({ id }) => {
       </PanelHeader>
 
       <div className="profile-content" style={gothicBackground}>
-        {(() => {
-          try {
-            return renderContent();
-          } catch (e) {
-            console.error("Critical render error in Profile:", e);
-            return (
-              <Div style={{ color: 'white', textAlign: 'center', marginTop: '40px' }}>
-                <Title level="2" style={{ color: neonPink }}>Системный сбой</Title>
-                <Text>Астральные потоки нестабильны. Попробуйте позже.</Text>
-                <Spacing size={20} />
-                <SimpleCell onClick={() => refresh()} style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '8px' }}>
-                  Переподключиться к источнику
-                </SimpleCell>
-              </Div>
-            );
-          }
-        })()}
+        <ErrorBoundary fallback={
+          <Div style={{ color: '#fff', textAlign: 'center', marginTop: '40px' }}>
+            <Title level="2" style={{ color: neonPink }}>Системный сбой</Title>
+            <Text style={{ color: '#fff' }}>Астральные потоки нестабильны. Попробуйте позже.</Text>
+            <Spacing size={20} />
+            <SimpleCell onClick={() => refresh()} style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '8px' }}>
+              <span style={{ color: '#fff' }}>Переподключиться к источнику</span>
+            </SimpleCell>
+          </Div>
+        }>
+          {(() => {
+            try {
+              return renderContent();
+            } catch (e) {
+              console.error("Critical render error in Profile:", e);
+              throw e; // Let ErrorBoundary handle it
+            }
+          })()}
+        </ErrorBoundary>
       </div>
 
       <style>{`

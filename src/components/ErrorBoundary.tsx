@@ -27,8 +27,8 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return this.props.fallback || (
         <Div style={{ padding: 20, textAlign: 'center' }}>
-          <Title level="2">Что-то пошло не так</Title>
-          <Text>Компонент временно недоступен из-за астральных помех.</Text>
+          <Title level="2" style={{ color: '#fff' }}>Что-то пошло не так</Title>
+          <Text style={{ color: '#fff' }}>Компонент временно недоступен из-за астральных помех.</Text>
         </Div>
       );
     }
