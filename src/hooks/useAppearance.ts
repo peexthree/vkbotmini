@@ -9,8 +9,9 @@ export const useAppearance = () => {
     const handler = (event: any) => {
       if (event.detail.type === 'VKWebAppUpdateConfig') {
         const receivedAppearance = event.detail.data.appearance;
-        if (receivedAppearance === 'light' || receivedAppearance === 'dark') {
-          setAppearance(receivedAppearance);
+        // Force dark mode if appearance is empty or not light/dark
+        if (receivedAppearance === 'light') {
+          setAppearance('light');
         } else {
           setAppearance('dark');
         }

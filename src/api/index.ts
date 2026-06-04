@@ -10,6 +10,10 @@ export interface UserInfo {
   level: number;
   stats: UserStats;
   status: string;
+  grimoire_count: number;
+  syndicate_count: number;
+  cycle_days: number;
+  active_skin: string;
 }
 
 const instance = axios.create({
