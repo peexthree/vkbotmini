@@ -14,15 +14,17 @@ import {
   Spinner,
   Button,
 } from '@vkontakte/vkui';
+import bridge from '@vkontakte/vk-bridge';
 import { getGrimoire, type GrimoireItem } from '../api';
 import ErrorBoundary from '../components/ErrorBoundary';
 
 interface GrimoireProps {
   id: string;
   onBack: () => void;
+  onItemClick: (item: GrimoireItem) => void;
 }
 
-const Grimoire: React.FC<GrimoireProps> = ({ id, onBack }) => {
+const Grimoire: React.FC<GrimoireProps> = ({ id, onBack, onItemClick }) => {
   const [items, setItems] = useState<GrimoireItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,9 +62,16 @@ const Grimoire: React.FC<GrimoireProps> = ({ id, onBack }) => {
     padding: '16px',
     border: '1px solid rgba(255, 0, 85, 0.2)',
     boxShadow: `0 0 10px rgba(255, 0, 85, 0.1)`,
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease',
     cursor: 'pointer',
     marginBottom: '12px',
+    WebkitTapHighlightColor: 'transparent',
+  };
+
+  const handleItemClick = (item: GrimoireItem) => {
+    // @ts-ignore
+    bridge.send('VKWebAppTapticImpact', { style: 'light' }).catch(() => {});
+    onItemClick(item);
   };
 
   const renderContent = () => {
@@ -110,6 +119,7 @@ const Grimoire: React.FC<GrimoireProps> = ({ id, onBack }) => {
             <Card key={item.id} style={{ background: 'transparent' }}>
               <div
                 style={cardStyle}
+                onClick={() => handleItemClick(item)}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.boxShadow = `0 0 15px ${neonPink}`;
                   e.currentTarget.style.transform = 'scale(1.02)';
@@ -117,6 +127,23 @@ const Grimoire: React.FC<GrimoireProps> = ({ id, onBack }) => {
                 onMouseLeave={(e) => {
                   e.currentTarget.style.boxShadow = `0 0 10px rgba(255, 0, 85, 0.1)`;
                   e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.opacity = '1';
+                }}
+                onMouseDown={(e) => {
+                  e.currentTarget.style.opacity = '0.7';
+                  e.currentTarget.style.boxShadow = `0 0 20px ${neonPink}`;
+                }}
+                onMouseUp={(e) => {
+                  e.currentTarget.style.opacity = '1';
+                  e.currentTarget.style.boxShadow = `0 0 15px ${neonPink}`;
+                }}
+                onTouchStart={(e) => {
+                  e.currentTarget.style.opacity = '0.7';
+                  e.currentTarget.style.boxShadow = `0 0 20px ${neonPink}`;
+                }}
+                onTouchEnd={(e) => {
+                  e.currentTarget.style.opacity = '1';
+                  e.currentTarget.style.boxShadow = `0 0 10px rgba(255, 0, 85, 0.1)`;
                 }}
               >
                 <Headline weight="2" style={{ color: neonPink, textShadow: `0 0 5px ${neonPink}`, fontSize: '18px' }}>

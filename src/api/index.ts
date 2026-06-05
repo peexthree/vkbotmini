@@ -21,6 +21,8 @@ export interface GrimoireItem {
   title: string;
   date: string;
   preview: string;
+  full_text: string;
+  image_url: string;
 }
 
 const instance = axios.create({
